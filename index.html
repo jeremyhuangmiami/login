@@ -5,12 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>JeremyWorld Login Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.js"></script>
   <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.css" />
-
   <style>
     :root {
       --bg-dark: #202020;
@@ -138,6 +136,9 @@
   </div>
 
   <script>
+    // --- Test Log to confirm script execution ---
+    console.log("LOGIN PAGE SCRIPT IS RUNNING!"); 
+
     // --- YOUR FIREBASE CONFIGURATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
@@ -197,7 +198,7 @@
       ],
       // Strongly recommended to prevent browser credential helper from interfering with FirebaseUI
       credentialHelper: firebaseui.auth.CredentialHelper.NONE, 
-
+      
       tosUrl: 'https://jeremyworld.org/terms-of-service', // Replace with your actual TOS URL
       privacyPolicyUrl: 'https://jeremyworld.org/privacy-policy' // Replace with your actual Privacy Policy URL
     };
@@ -228,7 +229,8 @@
         firebaseUiContainer.style.display = 'block'; // Show FirebaseUI widget
         signOutInfoDiv.style.display = 'none'; // Hide sign-out info
         // Start FirebaseUI only if the container is visible and UI is not already started
-        if (firebaseUiContainer.style.display !== 'none' && !ui.is  ) {
+        // FIXED: Changed !ui.is to !ui.isStarted()
+        if (firebaseUiContainer.style.display !== 'none' && !ui.isStarted()) { 
           ui.start('#firebaseui-auth-container', uiConfig);
         }
       }
@@ -244,7 +246,6 @@
         alert('Error signing out: ' + error.message); // Simple alert for sign-out errors
       });
     });
-
   </script>
 </body>
 </html>
