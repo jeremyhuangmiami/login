@@ -228,9 +228,8 @@
         // User is signed out.
         firebaseUiContainer.style.display = 'block'; // Show FirebaseUI widget
         signOutInfoDiv.style.display = 'none'; // Hide sign-out info
-        // Start FirebaseUI only if the container is visible and UI is not already started
-        // FIXED: Changed !ui.is to !ui.isStarted()
-        if (firebaseUiContainer.style.display !== 'none' && !ui.isStarted()) { 
+        // Start FirebaseUI only if the container is visible. Removed problematic ui.isStarted() check.
+        if (firebaseUiContainer.style.display !== 'none') { 
           ui.start('#firebaseui-auth-container', uiConfig);
         }
       }
