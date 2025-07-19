@@ -85,13 +85,12 @@
             // Configure which sign-in providers you want to use.
             signInOptions: [
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID, // Enable Google Sign-In
+                firebase.auth.EmailAuthProvider.PROVIDER_ID, // Enable Email/Password Sign-In
                 // Add other social providers you've enabled in Firebase here:
                 // firebase.auth.MicrosoftAuthProvider.PROVIDER_ID,
                 // firebase.auth.GithubAuthProvider.PROVIDER_ID,
                 // firebase.auth.AppleAuthProvider.PROVIDER_ID,
                 // etc.
-                // IMPORTANT: Email/Password (firebase.auth.EmailAuthProvider.PROVIDER_ID)
-                // has been REMOVED from this list.
             ],
             // Optional: Terms of service URL.
             tosUrl: 'https://www.example.com/terms-of-service',
