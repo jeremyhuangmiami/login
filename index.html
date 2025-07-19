@@ -1,209 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | JeremyWorld Auth</title>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-        }
-        #auth-container {
-            background-color: #fff;
-            padding: 30px 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-        h1 {
-            color: #007bff;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-        }
-        #loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #007bff;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-            display: none; /* Hidden by default */
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .firebaseui-container {
-            margin-top: 20px;
-        }
-        #user-info {
-            margin-top: 20px;
-            font-size: 1.1em;
-            color: #555;
-        }
-        #logout-button {
-            background-color: #dc3545;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 15px;
-            transition: background-color 0.2s ease;
-        }
-        #logout-button:hover {
-            background-color: #c82333;
-        }
-        #back-to-site-button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            margin-top: 15px;
-            transition: background-color 0.2s ease;
-        }
-        #back-to-site-button:hover {
-            background-color: #218838;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JeremyWorld Login Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://cdn.firebase.com/libs/firebaseui/6.0.0/firebaseui.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/6.0.0/firebaseui.css" />
+
+  <style>
+    :root {
+      --bg-dark: #202020;
+      --bg-medium: #303030;
+      --text-light: #f0f0f0;
+      --text-medium: #b0b0b0;
+      --accent-blue: #008CBA;
+      --accent-blue-dark: #007095;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+      box-sizing: border-box;
+    }
+    .container {
+      background-color: var(--bg-medium);
+      padding: 2.5rem 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 450px;
+      width: 100%;
+    }
+    h1 {
+      color: var(--accent-blue);
+      margin-bottom: 1.5rem;
+      font-size: 2.2rem;
+    }
+    p {
+      color: var(--text-medium);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    #firebaseui-auth-container {
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+      /* FirebaseUI default styles will apply here */
+    }
+    #loader {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--text-medium);
+    }
+    .sign-out-info {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background-color: var(--bg-dark);
+        border-radius: 8px;
+        color: var(--text-light);
+        display: none; /* Hidden by default */
+        text-align: left;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid var(--bg-light);
+    }
+    .sign-out-info p {
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text-medium);
+    }
+    .sign-out-info strong {
+        color: var(--text-light);
+    }
+    .sign-out-button {
+        background-color: #dc3545; /* Red for sign out */
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        margin-top: 1rem;
+    }
+    .sign-out-button:hover {
+        background-color: #c82333;
+        transform: translateY(-2px);
+    }
+    .sign-out-button:active {
+        transform: translateY(0);
+    }
+    .back-button {
+        background-color: var(--accent-blue);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        margin-top: 1rem;
+        margin-left: 10px; /* Space between buttons */
+    }
+    .back-button:hover {
+        background-color: var(--accent-blue-dark);
+        transform: translateY(-2px);
+    }
+    .back-button:active {
+        transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
-    <div id="auth-container">
-        <h1>JeremyWorld Login</h1>
-        <div id="loader"></div>
-        <div id="firebaseui-auth-container"></div>
-        <div id="user-info" style="display:none;">
-            <p>Welcome, <span id="display-name"></span>!</p>
-            <p>Email: <span id="user-email"></span></p>
-            <button id="logout-button">Sign Out</button>
-            <button id="back-to-site-button" style="display:none;">Back to Your Site</button>
-        </div>
+  <div class="container">
+    <h1>JeremyWorld Login Hub</h1>
+    <p>Sign in or create an account to access JeremyWorld apps like Jerry Mark Ten.</p>
+
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading authentication UI...</div>
+
+    <div id="sign-out-info" class="sign-out-info">
+        <p>You are currently signed in as: <strong id="user-email-display"></strong></p>
+        <button id="sign-out-button" class="sign-out-button">Sign Out</button>
+        <button id="back-to-site-button" class="back-button" style="display:none;">Back to Your Site</button>
     </div>
+  </div>
 
-    <script>
-        // --- YOUR FIREBASE CONFIGURATION ---
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
-            authDomain: "jeremyworld-auth.firebaseapp.com",
-            projectId: "jeremyworld-auth",
-            storageBucket: "jeremyworld-auth.firebasestorage.app",
-            messagingSenderId: "830728575641",
-            appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
-        };
-        // --- END OF FIREBASE CONFIGURATION ---
+  <script>
+    // --- YOUR FIREBASE CONFIGURATION ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
+        authDomain: "jeremyworld-auth.firebaseapp.com",
+        projectId: "jeremyworld-auth",
+        storageBucket: "jeremyworld-auth.firebasestorage.app",
+        messagingSenderId: "830728575641",
+        appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
+    };
+    // --- END OF FIREBASE CONFIGURATION ---
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-        // Initialize the FirebaseUI Widget
-        const ui = new firebaseui.auth.AuthUI(auth);
+    // DOM elements for signed-in state
+    const signOutInfoDiv = document.getElementById('sign-out-info');
+    const userEmailDisplay = document.getElementById('user-email-display');
+    const signOutButton = document.getElementById('sign-out-button');
+    const backToSiteButton = document.getElementById('back-to-site-button');
+    const firebaseUiContainer = document.getElementById('firebaseui-auth-container');
+    const loader = document.getElementById('loader');
 
-        // Get elements
-        const loader = document.getElementById('loader');
-        const authContainer = document.getElementById('firebaseui-auth-container');
-        const userInfoDiv = document.getElementById('user-info');
-        const displayNameSpan = document.getElementById('display-name');
-        const userEmailSpan = document.getElementById('user-email');
-        const logoutButton = document.getElementById('logout-button');
-        const backToSiteButton = document.getElementById('back-to-site-button');
+    // FirebaseUI configuration
+    const uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+          // User successfully signed in.
+          // Return type determines whether we continue the screen flow or redirect.
+          const urlParams = new URLSearchParams(window.location.search);
+          const returnToUrl = urlParams.get('returnTo');
+          if (returnToUrl) {
+            window.location.assign(decodeURIComponent(returnToUrl));
+            return false; // Prevent FirebaseUI from redirecting
+          }
+          // If no 'returnTo' parameter, explicitly redirect to Jerry Mark Ten
+          window.location.assign('https://jerrymarkten.jeremyworld.org/');
+          return false; // Prevent FirebaseUI from redirecting
+        },
+        uiShown: function() {
+          // The widget is rendered.
+          // Hide the loader.
+          loader.style.display = 'none';
+        }
+      },
+      // Use 'redirect' flow for robustness
+      signInFlow: 'redirect',
+      // Specify the URL to redirect to after successful sign-in
+      signInSuccessUrl: 'https://jerrymarkten.jeremyworld.org/', // Explicitly set success URL
 
-        // Configure FirebaseUI.
-        const uiConfig = {
-            callbacks: {
-                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-                    // User successfully signed in.
-                    // Return type determines whether we continue the signIn flow or save it in a cookie.
-                    // We'll handle redirection manually below based on the 'returnTo' parameter.
-                    return false; // Prevent FirebaseUI from automatically redirecting
-                },
-                uiShown: function() {
-                    // The widget is rendered. Hide the loader.
-                    loader.style.display = 'none';
-                }
-            },
-            signInFlow: 'popup', // 'popup' for easier cross-domain, 'redirect' if all domains are same
-            signInOptions: [
-                // List of Firebase providers supported.
-                firebase.auth.EmailAuthProvider.PROVIDER_ID,
-                // You can add other providers here if enabled in Firebase Console:
-                // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-                // firebase.auth.GithubAuthProvider.PROVIDER_ID,
-            ],
-            // Optional: Terms of service url.
-            // tosUrl: '<your-tos-url>',
-            // Optional: Privacy policy url.
-            // privacyPolicyUrl: '<your-privacy-policy-url>'
-        };
+      signInOptions: [
+        {
+          provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          requireDisplayName: false, // Set to true if you want users to provide a display name on sign up.
+          disableSignUp: false // False means both sign-in and sign-up are allowed for Email/Password.
+        }
+      ],
+      // Strongly recommended to prevent browser credential helper from interfering with FirebaseUI
+      credentialHelper: firebaseui.auth.CredentialHelper.NONE, 
 
-        // Firebase Auth State Listener
-        auth.onAuthStateChanged(function(user) {
-            if (user) {
-                // User is signed in.
-                loader.style.display = 'none';
-                authContainer.style.display = 'none'; // Hide the login form
-                userInfoDiv.style.display = 'block'; // Show user info
-                displayNameSpan.textContent = user.displayName || user.email; // Fallback to email if no display name
-                userEmailSpan.textContent = user.email;
+      tosUrl: 'https://jeremyworld.org/terms-of-service', // Replace with your actual TOS URL
+      privacyPolicyUrl: 'https://jeremyworld.org/privacy-policy' // Replace with your actual Privacy Policy URL
+    };
 
-                // Check for 'returnTo' URL parameter
-                const urlParams = new URLSearchParams(window.location.search);
-                const returnToUrl = urlParams.get('returnTo');
+    // Initialize the FirebaseUI Widget.
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-                if (returnToUrl) {
-                    backToSiteButton.style.display = 'inline-block';
-                    backToSiteButton.onclick = function() {
-                        window.location.href = decodeURIComponent(returnToUrl);
-                    };
-                } else {
-                    backToSiteButton.style.display = 'none'; // Hide if no return URL
-                }
+    // --- Authentication State Observer ---
+    auth.onAuthStateChanged(function(user) {
+      loader.style.display = 'none'; // Hide loader once auth state is determined
+      if (user) {
+        // User is signed in.
+        firebaseUiContainer.style.display = 'none'; // Hide FirebaseUI widget
+        signOutInfoDiv.style.display = 'block'; // Show sign-out info
+        userEmailDisplay.textContent = user.email || user.displayName || 'N/A';
 
-                console.log("User logged in:", user.uid, user.email);
+        const urlParams = new URLSearchParams(window.location.search);
+        const returnToUrl = urlParams.get('returnTo');
+        if (returnToUrl) {
+            backToSiteButton.style.display = 'inline-block'; // Show back button if 'returnTo' exists
+            backToSiteButton.onclick = () => window.location.assign(decodeURIComponent(returnToUrl));
+        } else {
+            backToSiteButton.style.display = 'none'; // Hide if no 'returnTo'
+        }
 
-            } else {
-                // User is signed out.
-                userInfoDiv.style.display = 'none'; // Hide user info
-                backToSiteButton.style.display = 'none'; // Hide button
-                authContainer.style.display = 'block'; // Show the login form
-                loader.style.display = 'block'; // Show loader while FirebaseUI loads
-                ui.start('#firebaseui-auth-container', uiConfig); // Render the FirebaseUI Widget
-                console.log("User is logged out.");
-            }
-        });
+      } else {
+        // User is signed out.
+        firebaseUiContainer.style.display = 'block'; // Show FirebaseUI widget
+        signOutInfoDiv.style.display = 'none'; // Hide sign-out info
+        // The start method will wait until the DOM is loaded.
+        // Only start FirebaseUI if it hasn't already started to prevent errors
+        if (!ui.is        // Start FirebaseUI only if the container is visible and UI is not already started
+        if (firebaseUiContainer.style.display !== 'none' && !ui.is  ) {
+          ui.start('#firebaseui-auth-container', uiConfig);
+        }
+      }
+    });
 
-        // Logout Button Handler
-        logoutButton.addEventListener('click', function() {
-            auth.signOut().then(function() {
-                // Sign-out successful. onAuthStateChanged will handle UI update.
-                console.log('User signed out.');
-            }).catch(function(error) {
-                // An error happened.
-                console.error('Sign Out Error:', error);
-                alert('Error signing out: ' + error.message);
-            });
-        });
+    // --- Sign Out Button Handler ---
+    signOutButton.addEventListener('click', function() {
+      auth.signOut().then(function() {
+        console.log('User signed out from Login Hub.');
+        // onAuthStateChanged will handle hiding sign-out info and showing FirebaseUI
+      }).catch(function(error) {
+        console.error('Error signing out:', error);
+        alert('Error signing out: ' + error.message); // Simple alert for sign-out errors
+      });
+    });
 
-    </script>
+  </script>
 </body>
 </html>
