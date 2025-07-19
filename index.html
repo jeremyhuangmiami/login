@@ -8,8 +8,8 @@
 
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://cdn.firebase.com/libs/firebaseui/6.0.0/firebaseui.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/6.0.0/firebaseui.css" />
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.0/firebase-ui-auth.css" />
 
   <style>
     :root {
@@ -227,9 +227,7 @@
         // User is signed out.
         firebaseUiContainer.style.display = 'block'; // Show FirebaseUI widget
         signOutInfoDiv.style.display = 'none'; // Hide sign-out info
-        // The start method will wait until the DOM is loaded.
-        // Only start FirebaseUI if it hasn't already started to prevent errors
-        if (!ui.is        // Start FirebaseUI only if the container is visible and UI is not already started
+        // Start FirebaseUI only if the container is visible and UI is not already started
         if (firebaseUiContainer.style.display !== 'none' && !ui.is  ) {
           ui.start('#firebaseui-auth-container', uiConfig);
         }
@@ -242,7 +240,7 @@
         console.log('User signed out from Login Hub.');
         // onAuthStateChanged will handle hiding sign-out info and showing FirebaseUI
       }).catch(function(error) {
-        console.error('Error signing out:', error);
+        console.error('Error signing out: ', error);
         alert('Error signing out: ' + error.message); // Simple alert for sign-out errors
       });
     });
