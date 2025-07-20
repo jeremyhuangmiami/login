@@ -1,54 +1,414 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JeremyWorld Login</title>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JeremyWorld Auth Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #0ff0fc;
+            --neon-purple: #bc13fe;
+            --dark-bg: #0a0a12;
+            --darker-bg: #050508;
+            --card-bg: rgba(15, 15, 25, 0.8);
+            --text: #e0e0ff;
+            --text-dim: #a0a0c0;
+            --glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(188, 19, 254, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 255, 252, 0.15) 0%, transparent 50%);
+        }
+        
+        .cyber-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid rgba(95, 95, 255, 0.2);
+            padding: 2.5rem;
+            box-shadow: var(--glow);
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 45%,
+                rgba(11, 240, 252, 0.1) 50%,
+                transparent 55%
+            );
+            transform: rotate(30deg);
+            animation: scan 6s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%) rotate(30deg); }
+            100% { transform: translateY(100%) rotate(30deg); }
+        }
+        
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px var(--neon-blue);
+        }
+        
+        .title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            letter-spacing: 1px;
+            color: var(--neon-purple);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            opacity: 0.5;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(95, 95, 255, 0.3);
+            font-family: 'Roboto Mono', monospace;
+            color: var(--text);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-bottom-color: var(--neon-blue);
+            box-shadow: 0 1px 0 0 var(--neon-blue);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+            color: black;
+            font-weight: 700;
+            box-shadow: 0 0 10px rgba(11, 240, 252, 0.5);
+        }
+        
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(11, 240, 252, 0.8);
+            transform: translateY(-2px);
+        }
+        
+        .btn-google {
+            background: rgba(30, 30, 40, 0.8);
+            color: var(--text);
+            border: 1px solid rgba(95, 95, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-google:hover {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(11, 240, 252, 0.3);
+        }
+        
+        .google-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-dim);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px solid rgba(95, 95, 255, 0.2);
+        }
+        
+        .divider::before {
+            margin-right: 1rem;
+        }
+        
+        .divider::after {
+            margin-left: 1rem;
+        }
+        
+        .footer-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        
+        .footer-text a {
+            color: var(--neon-blue);
+            text-decoration: none;
+        }
+        
+        .footer-text a:hover {
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+        
+        .message {
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.8rem;
+            text-align: center;
+            display: none;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+        }
+        
+        .message.success {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .loading::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(11, 240, 252, 0.3);
+            border-top-color: var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .cyber-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Login to JeremyWorld</h1>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="login-btn">Login</button>
-  <p id="error-message" style="color:red;"></p>
+    <div class="cyber-card">
+        <div class="logo">JEREMYWORLD</div>
+        <h1 class="title">AUTH PORTAL</h1>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="auth-form">
+            <div class="form-group">
+                <label for="email">User ID</label>
+                <input type="email" id="email" required placeholder="user@jeremyworld.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Access Code</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" id="sign-in-btn" class="btn btn-primary">AUTHENTICATE</button>
+        </form>
+        
+        <div class="divider">OR</div>
+        
+        <button id="google-sign-in-btn" class="btn btn-google">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            CONNECT WITH GOOGLE
+        </button>
+        
+        <div class="footer-text">
+            <a href="#" id="toggle-sign-up">REQUEST ACCESS CREDENTIALS</a>
+        </div>
+    </div>
 
-  <script>
-    // --- Firebase config (SAME AS jerrymarkten.jeremyworld.org) ---
-    const firebaseConfig = {
-      apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
-      authDomain: "jeremyworld-auth.firebaseapp.com",
-      projectId: "jeremyworld-auth",
-      storageBucket: "jeremyworld-auth.appspot.com",
-      messagingSenderId: "830728575641",
-      appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
+            authDomain: "jeremyworld-auth.firebaseapp.com",
+            projectId: "jeremyworld-auth",
+            storageBucket: "jeremyworld-auth.appspot.com",
+            messagingSenderId: "830728575641",
+            appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
+        };
 
-    // --- Login flow ---
-    document.getElementById('login-btn').addEventListener('click', async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const errorMessage = document.getElementById('error-message');
-      errorMessage.textContent = '';
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-      try {
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const idToken = await userCredential.user.getIdToken(true);
+        // DOM Elements
+        const authForm = document.getElementById('auth-form');
+        const signInBtn = document.getElementById('sign-in-btn');
+        const googleSignInBtn = document.getElementById('google-sign-in-btn');
+        const toggleSignUp = document.getElementById('toggle-sign-up');
+        const messageEl = document.getElementById('message');
 
-        // --- Set __session cookie for all subdomains ---
-        document.cookie = `__session=${idToken}; path=/; domain=.jeremyworld.org; Secure`;
+        // State
+        let isSignUp = false;
 
-        // --- Redirect to returnTo or fallback ---
-        const returnTo = new URLSearchParams(window.location.search).get("returnTo");
-        window.location.href = returnTo || "https://jerrymarkten.jeremyworld.org";
-      } catch (error) {
-        console.error(error);
-        errorMessage.textContent = error.message;
-      }
-    });
-  </script>
+        // Event Listeners
+        toggleSignUp.addEventListener('click', (e) => {
+            e.preventDefault();
+            isSignUp = !isSignUp;
+            signInBtn.textContent = isSignUp ? 'REQUEST ACCESS' : 'AUTHENTICATE';
+            toggleSignUp.textContent = isSignUp ? 'HAVE CREDENTIALS?' : 'REQUEST ACCESS CREDENTIALS';
+        });
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                showMessage('ACCESS DENIED: CREDENTIALS REQUIRED', 'error');
+                return;
+            }
+
+            try {
+                setLoading(true);
+
+                if (isSignUp) {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                    showMessage('ACCESS GRANTED: CREDENTIALS REGISTERED', 'success');
+                    authForm.reset();
+                } else {
+                    await auth.signInWithEmailAndPassword(email, password);
+                    window.location.href = 'https://dashboard.jeremyworld.com/';
+                }
+            } catch (error) {
+                showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        googleSignInBtn.addEventListener('click', () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.setCustomParameters({
+                prompt: 'select_account',
+                hd: 'jeremyworld.com' // Optional: restrict to your domain
+            });
+
+            auth.signInWithRedirect(provider)
+                .catch((error) => {
+                    showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
+                });
+        });
+
+        // Handle redirect after Google sign-in
+        auth.getRedirectResult().then((result) => {
+            if (result.user) {
+                window.location.href = 'https://dashboard.jeremyworld.com/';
+            }
+        }).catch((error) => {
+            showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
+        });
+
+        // Helper Functions
+        function showMessage(msg, type) {
+            messageEl.textContent = msg;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            setTimeout(() => messageEl.style.display = 'none', 5000);
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                signInBtn.classList.add('loading');
+                signInBtn.disabled = true;
+            } else {
+                signInBtn.classList.remove('loading');
+                signInBtn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>
