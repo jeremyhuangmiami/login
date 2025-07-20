@@ -1,110 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JeremyWorld Login</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JeremyWorld Login</title>
 
-    <!-- Firebase SDKs (App and Auth) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <!-- FirebaseUI SDK and CSS -->
-    <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
+  <!-- FirebaseUI SDK and CSS -->
+  <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+  <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            margin: 0;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 100%;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        /* Style for FirebaseUI container */
-        #firebaseui-auth-container {
-            margin-top: 20px;
-        }
-        #loader {
-            text-align: center;
-            padding: 20px;
-        }
-    </style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    #loader {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Welcome to JeremyWorld</h1>
-        <p>Please sign in to continue.</p>
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader">Loading...</div>
-    </div>
+  <div class="login-container">
+    <h1>Welcome to JeremyWorld</h1>
+    <p>Please sign in to continue.</p>
+    <div id="firebaseui-auth-container"></div>
+    <div id="loader">Loading...</div>
+  </div>
 
-    <script>
-        // Your Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
-            authDomain: "jeremyworld-auth.firebaseapp.com",
-            projectId: "jeremyworld-auth",
-            storageBucket: "jeremyworld-auth.appspot.com",
-            messagingSenderId: "830728575641",
-            appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
-        };
+  <script>
+    // Firebase config (replace with yours)
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
+      authDomain: "jeremyworld-auth.firebaseapp.com",
+      projectId: "jeremyworld-auth",
+      storageBucket: "jeremyworld-auth.appspot.com",
+      messagingSenderId: "830728575641",
+      appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
+    };
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-        // Initialize the FirebaseUI Widget.
-        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+    // Initialize FirebaseUI
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-        // Configure FirebaseUI.
-        const uiConfig = {
-            callbacks: {
-                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-                    // User successfully signed in.
-                    // Return true to redirect to signInSuccessUrl.
-                    return true;
-                },
-                uiShown: function() {
-                    // The widget is rendered. Hide the loader.
-                    document.getElementById('loader').style.display = 'none';
-                }
-            },
-            // Redirect to this URL upon successful sign in.
-            signInSuccessUrl: 'https://jerrymarkten.jeremyworld.org/', // Redirect to your AI Chatbot page
+    // Extract returnTo from URL
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('returnTo') || 'https://jeremyworld.org/';
 
-            // Configure which sign-in providers you want to use.
-            signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID, // Enable Google Sign-In
-                firebase.auth.EmailAuthProvider.PROVIDER_ID, // Enable Email/Password Sign-In
-                // Add other social providers you've enabled in Firebase here:
-                // firebase.auth.MicrosoftAuthProvider.PROVIDER_ID,
-                // firebase.auth.GithubAuthProvider.PROVIDER_ID,
-                // firebase.auth.AppleAuthProvider.PROVIDER_ID,
-                // etc.
-            ],
-            // Optional: Terms of service URL.
-            tosUrl: 'https://www.example.com/terms-of-service', // Link to your terms-of-service.md
-            // Optional: Privacy policy URL.
-            privacyPolicyUrl: 'https://www.example.com/privacy-policy' // Link to your privacy-policy.md
-        };
+    // Configure FirebaseUI
+    const uiConfig = {
+      callbacks: {
+        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+          window.location.href = returnTo;
+          return false; // prevent default redirect
+        },
+        uiShown: function() {
+          document.getElementById('loader').style.display = 'none';
+        }
+      },
+      signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.EmailAuthProvider.PROVIDER_ID
+      ],
+      tosUrl: 'https://jeremyworld.org/terms',
+      privacyPolicyUrl: 'https://jeremyworld.org/privacy'
+    };
 
-        // Start the FirebaseUI Auth widget.
-        ui.start('#firebaseui-auth-container', uiConfig);
-    </script>
+    // Start FirebaseUI
+    ui.start('#firebaseui-auth-container', uiConfig);
+  </script>
 </body>
 </html>
