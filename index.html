@@ -3,293 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JeremyWorld Auth Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <title>JeremyWorld Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-blue: #0ff0fc;
-            --neon-purple: #bc13fe;
-            --dark-bg: #0a0a12;
-            --darker-bg: #050508;
-            --card-bg: rgba(15, 15, 25, 0.8);
-            --text: #e0e0ff;
-            --text-dim: #a0a0c0;
-            --glow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+            --bg-dark: #202020;
+            --bg-medium: #303030;
+            --bg-light: #404040;
+            --text-light: #f0f0f0;
+            --text-medium: #b0b0b0;
+            --accent-blue: #008CBA;
+            --accent-blue-dark: #007095;
+            --accent-blue-light: rgba(0, 140, 186, 0.2);
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Roboto Mono', monospace;
-            background: var(--dark-bg);
-            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 1rem;
             background-image: 
-                radial-gradient(circle at 25% 25%, rgba(188, 19, 254, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(0, 255, 252, 0.15) 0%, transparent 50%);
+                radial-gradient(circle at 25% 25%, rgba(0, 140, 186, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 140, 186, 0.15) 0%, transparent 50%);
         }
-        
-        .cyber-card {
+
+        .login-container {
             width: 100%;
             max-width: 420px;
-            background: var(--card-bg);
-            border-radius: 8px;
-            border: 1px solid rgba(95, 95, 255, 0.2);
+            background: var(--glass-bg);
+            border-radius: var(--border-radius);
             padding: 2.5rem;
-            box-shadow: var(--glow);
-            backdrop-filter: blur(8px);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            animation: fadeIn 0.5s ease-out;
         }
-        
-        .cyber-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                transparent 45%,
-                rgba(11, 240, 252, 0.1) 50%,
-                transparent 55%
-            );
-            transform: rotate(30deg);
-            animation: scan 6s linear infinite;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes scan {
-            0% { transform: translateY(-100%) rotate(30deg); }
-            100% { transform: translateY(100%) rotate(30deg); }
-        }
-        
+
         .logo {
-            font-family: 'Orbitron', sans-serif;
             text-align: center;
             margin-bottom: 2rem;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 8px var(--neon-blue);
         }
-        
-        .title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.25rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            letter-spacing: 1px;
-            color: var(--neon-purple);
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--accent-blue), #00b4d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        
+
+        .logo p {
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+
+        .auth-form {
+            margin-top: 2rem;
+        }
+
         .form-group {
             margin-bottom: 1.5rem;
             position: relative;
         }
-        
-        .form-group::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            opacity: 0.5;
-        }
-        
-        label {
+
+        .form-group label {
             display: block;
-            font-size: 0.8rem;
             margin-bottom: 0.5rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        input {
-            width: 100%;
-            padding: 0.75rem;
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid rgba(95, 95, 255, 0.3);
-            font-family: 'Roboto Mono', monospace;
-            color: var(--text);
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        
-        input:focus {
-            outline: none;
-            border-bottom-color: var(--neon-blue);
-            box-shadow: 0 1px 0 0 var(--neon-blue);
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 0.9rem;
-            border: none;
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
+            color: var(--text-medium);
             font-size: 0.9rem;
             font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-light);
+            border: none;
+            border-radius: var(--border-radius);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px var(--accent-blue-light);
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: var(--accent-blue);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
-            color: black;
-            font-weight: 700;
-            box-shadow: 0 0 10px rgba(11, 240, 252, 0.5);
-        }
-        
-        .btn-primary:hover {
-            box-shadow: 0 0 20px rgba(11, 240, 252, 0.8);
-            transform: translateY(-2px);
-        }
-        
-        .btn-google {
-            background: rgba(30, 30, 40, 0.8);
-            color: var(--text);
-            border: 1px solid rgba(95, 95, 255, 0.3);
+            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 140, 186, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-google {
+            background: var(--glass-bg);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         .btn-google:hover {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 10px rgba(11, 240, 252, 0.3);
+            border-color: var(--accent-blue);
+            background: rgba(0, 140, 186, 0.1);
         }
-        
-        .google-icon {
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-        }
-        
+
         .divider {
             display: flex;
             align-items: center;
             margin: 1.5rem 0;
-            color: var(--text-dim);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: var(--text-medium);
+            font-size: 0.8rem;
         }
-        
-        .divider::before, .divider::after {
+
+        .divider::before,
+        .divider::after {
             content: "";
             flex: 1;
-            border-bottom: 1px solid rgba(95, 95, 255, 0.2);
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         }
-        
+
         .divider::before {
             margin-right: 1rem;
         }
-        
+
         .divider::after {
             margin-left: 1rem;
         }
-        
-        .footer-text {
-            text-align: center;
-            margin-top: 1.5rem;
-            font-size: 0.75rem;
-            color: var(--text-dim);
-        }
-        
-        .footer-text a {
-            color: var(--neon-blue);
-            text-decoration: none;
-        }
-        
-        .footer-text a:hover {
-            text-shadow: 0 0 5px var(--neon-blue);
-        }
-        
+
         .message {
-            padding: 0.75rem;
-            border-radius: 4px;
+            padding: 1rem;
             margin-bottom: 1.5rem;
-            font-size: 0.8rem;
+            border-radius: var(--border-radius);
             text-align: center;
+            font-size: 0.9rem;
             display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .error {
             background: rgba(255, 0, 0, 0.1);
-            border: 1px solid rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 0, 0, 0.2);
         }
-        
-        .message.success {
+
+        .success {
             background: rgba(0, 255, 0, 0.1);
-            border: 1px solid rgba(0, 255, 0, 0.3);
+            color: #51cf66;
+            border: 1px solid rgba(0, 255, 0, 0.2);
         }
-        
-        .loading {
-            position: relative;
-            color: transparent !important;
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--text-medium);
+            font-size: 0.8rem;
         }
-        
-        .loading::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+
+        .footer a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .google-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--glass-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal h2 {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--accent-blue), #00b4d8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .modal p {
+            color: var(--text-medium);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 1rem;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-blue);
+        }
+
+        .spinner {
+            display: inline-block;
             width: 16px;
             height: 16px;
-            border: 2px solid rgba(11, 240, 252, 0.3);
-            border-top-color: var(--neon-blue);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
         }
-        
+
         @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        
-        @media (max-width: 480px) {
-            .cyber-card {
-                padding: 1.5rem;
-            }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="cyber-card">
-        <div class="logo">JEREMYWORLD</div>
-        <h1 class="title">AUTH PORTAL</h1>
-        
+    <div class="login-container">
+        <div class="logo">
+            <h1>Welcome Back</h1>
+            <p>Sign in to access your JeremyWorld account</p>
+        </div>
+
         <div id="message" class="message"></div>
-        
-        <form id="auth-form">
+
+        <form id="auth-form" class="auth-form">
             <div class="form-group">
-                <label for="email">User ID</label>
-                <input type="email" id="email" required placeholder="user@jeremyworld.com">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="your@email.com">
             </div>
             <div class="form-group">
-                <label for="password">Access Code</label>
+                <label for="password">Password</label>
                 <input type="password" id="password" required placeholder="••••••••">
+                <div class="forgot-password">
+                    <a href="#" id="forgot-password-link">Forgot password?</a>
+                </div>
             </div>
-            <button type="submit" id="sign-in-btn" class="btn btn-primary">AUTHENTICATE</button>
+            <button type="submit" id="sign-in-btn" class="btn">Sign In</button>
         </form>
-        
-        <div class="divider">OR</div>
-        
+
+        <div class="divider">or continue with</div>
+
         <button id="google-sign-in-btn" class="btn btn-google">
             <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -297,15 +364,29 @@
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
-            CONNECT WITH GOOGLE
+            Google
         </button>
-        
-        <div class="footer-text">
-            <a href="#" id="toggle-sign-up">REQUEST ACCESS CREDENTIALS</a>
+
+        <div class="footer">
+            Don't have an account? <a href="https://login.jeremyworld.org/signup">Sign up</a>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-modal" class="modal">
+        <div class="modal-content">
+            <h2>Reset Password</h2>
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
+            <form id="reset-password-form">
+                <div class="form-group">
+                    <input type="email" id="reset-email" required placeholder="your@email.com">
+                </div>
+                <button type="submit" class="btn">Send Reset Link</button>
+                <button type="button" id="cancel-reset" class="btn btn-cancel">Cancel</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     
@@ -328,71 +409,13 @@
         const authForm = document.getElementById('auth-form');
         const signInBtn = document.getElementById('sign-in-btn');
         const googleSignInBtn = document.getElementById('google-sign-in-btn');
-        const toggleSignUp = document.getElementById('toggle-sign-up');
         const messageEl = document.getElementById('message');
+        const forgotPasswordLink = document.getElementById('forgot-password-link');
+        const forgotPasswordModal = document.getElementById('forgot-password-modal');
+        const resetPasswordForm = document.getElementById('reset-password-form');
+        const cancelResetBtn = document.getElementById('cancel-reset');
 
-        // State
-        let isSignUp = false;
-
-        // Event Listeners
-        toggleSignUp.addEventListener('click', (e) => {
-            e.preventDefault();
-            isSignUp = !isSignUp;
-            signInBtn.textContent = isSignUp ? 'REQUEST ACCESS' : 'AUTHENTICATE';
-            toggleSignUp.textContent = isSignUp ? 'HAVE CREDENTIALS?' : 'REQUEST ACCESS CREDENTIALS';
-        });
-
-        authForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            if (!email || !password) {
-                showMessage('ACCESS DENIED: CREDENTIALS REQUIRED', 'error');
-                return;
-            }
-
-            try {
-                setLoading(true);
-
-                if (isSignUp) {
-                    await auth.createUserWithEmailAndPassword(email, password);
-                    showMessage('ACCESS GRANTED: CREDENTIALS REGISTERED', 'success');
-                    authForm.reset();
-                } else {
-                    await auth.signInWithEmailAndPassword(email, password);
-                    window.location.href = 'https://dashboard.jeremyworld.com/';
-                }
-            } catch (error) {
-                showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
-            } finally {
-                setLoading(false);
-            }
-        });
-
-        googleSignInBtn.addEventListener('click', () => {
-            const provider = new firebase.auth.GoogleAuthProvider();
-            provider.setCustomParameters({
-                prompt: 'select_account',
-                hd: 'jeremyworld.com' // Optional: restrict to your domain
-            });
-
-            auth.signInWithRedirect(provider)
-                .catch((error) => {
-                    showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
-                });
-        });
-
-        // Handle redirect after Google sign-in
-        auth.getRedirectResult().then((result) => {
-            if (result.user) {
-                window.location.href = 'https://dashboard.jeremyworld.com/';
-            }
-        }).catch((error) => {
-            showMessage(`SYSTEM ALERT: ${error.message.toUpperCase()}`, 'error');
-        });
-
-        // Helper Functions
+        // Show message helper
         function showMessage(msg, type) {
             messageEl.textContent = msg;
             messageEl.className = `message ${type}`;
@@ -400,15 +423,112 @@
             setTimeout(() => messageEl.style.display = 'none', 5000);
         }
 
-        function setLoading(isLoading) {
-            if (isLoading) {
-                signInBtn.classList.add('loading');
+        // Email/password login
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
                 signInBtn.disabled = true;
-            } else {
-                signInBtn.classList.remove('loading');
+                signInBtn.innerHTML = '<span class="spinner"></span> Signing in...';
+
+                // Set session persistence
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                
+                // Sign in user
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                
+                // Set cross-domain cookie
+                document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800"; // 1 week
+                
+                // Redirect to dashboard or previous page
+                window.location.href = 'https://jeremyworld.org/dashboard';
+            } catch (error) {
+                showMessage(error.message, 'error');
                 signInBtn.disabled = false;
+                signInBtn.textContent = 'Sign In';
             }
-        }
+        });
+
+        // Google Sign-In
+        googleSignInBtn.addEventListener('click', async () => {
+            try {
+                googleSignInBtn.disabled = true;
+                googleSignInBtn.innerHTML = '<span class="spinner"></span> Continuing with Google...';
+
+                const provider = new firebase.auth.GoogleAuthProvider();
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                const result = await auth.signInWithPopup(provider);
+                
+                // Set cross-domain cookie
+                document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800"; // 1 week
+                
+                // Redirect to dashboard or previous page
+                window.location.href = 'https://jeremyworld.org/dashboard';
+            } catch (error) {
+                showMessage(error.message, 'error');
+                googleSignInBtn.disabled = false;
+                googleSignInBtn.innerHTML = `
+                    <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Google
+                `;
+            }
+        });
+
+        // Forgot Password Functionality
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            forgotPasswordModal.style.display = 'flex';
+            document.getElementById('reset-email').value = document.getElementById('email').value;
+        });
+
+        cancelResetBtn.addEventListener('click', () => {
+            forgotPasswordModal.style.display = 'none';
+        });
+
+        resetPasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('reset-email').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+                
+                await auth.sendPasswordResetEmail(email);
+                
+                showMessage('Password reset email sent. Please check your inbox.', 'success');
+                forgotPasswordModal.style.display = 'none';
+            } catch (error) {
+                showMessage(error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Send Reset Link';
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === forgotPasswordModal) {
+                forgotPasswordModal.style.display = 'none';
+            }
+        });
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Set cross-domain cookie if not already set
+                if (!document.cookie.includes('jeremyworld-auth=true')) {
+                    document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800";
+                }
+                window.location.href = 'https://jeremyworld.org/dashboard';
+            }
+        });
     </script>
 </body>
 </html>
