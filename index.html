@@ -3,55 +3,84 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JeremyWorld Login</title>
+    <title>JeremyWorld Dashboard</title>
 
+    <!-- Firebase SDKs (App and Auth) - IMPORTANT: Use the same versions as your login page -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-    <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
-
     <style>
+        /* Your styles for the jerrymarkten.jeremyworld.org page */
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f2f5;
+            background-color: #e9ebee;
             margin: 0;
+            flex-direction: column;
+            color: #333;
         }
-        .login-container {
+        .content-container {
             background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 400px;
-            width: 100%;
+            max-width: 600px;
+            width: 90%;
+            display: none; /* Hidden by default until user is authenticated */
         }
         h1 {
-            color: #333;
+            color: #2c3e50;
             margin-bottom: 20px;
         }
-        /* Style for FirebaseUI container */
-        #firebaseui-auth-container {
+        p {
+            margin-bottom: 30px;
+        }
+        #loading-message {
+            font-size: 1.2em;
+            color: #555;
+        }
+        #user-info {
             margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        #logout-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #logout-button:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h1>Welcome to JeremyWorld</h1>
-        <p>Please sign in to continue.</p>
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader">Loading...</div>
+    <div id="loading-message">Loading user session...</div>
+    <div class="content-container" id="app-content">
+        <h1>Welcome to Your Dashboard!</h1>
+        <p>You are successfully logged in to JeremyWorld.</p>
+        <div id="user-info">
+            <p><strong>Email:</strong> <span id="user-email"></span></p>
+            <p><strong>User ID:</strong> <span id="user-uid"></span></p>
+        </div>
+        <button id="logout-button">Log Out</button>
     </div>
 
     <script>
-        // Your Firebase configuration (updated with the provided API Key!)
+        // Your Firebase configuration (MUST BE THE SAME AS YOUR LOGIN PAGE)
         const firebaseConfig = {
-            apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y", // <--- UPDATED API KEY
+            apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
             authDomain: "jeremyworld-auth.firebaseapp.com",
             projectId: "jeremyworld-auth",
             storageBucket: "jeremyworld-auth.appspot.com",
@@ -62,44 +91,41 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
 
-        // Initialize the FirebaseUI Widget.
-        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        const auth = firebase.auth();
+        const appContent = document.getElementById('app-content');
+        const loadingMessage = document.getElementById('loading-message');
+        const userEmailSpan = document.getElementById('user-email');
+        const userUidSpan = document.getElementById('user-uid');
+        const logoutButton = document.getElementById('logout-button');
 
-        // Configure FirebaseUI.
-        const uiConfig = {
-            callbacks: {
-                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-                    // User successfully signed in.
-                    // Return type determines whether we continue the form flow or redirect.
-                    return true; // Return true to redirect to signInSuccessUrl.
-                },
-                uiShown: function() {
-                    // The widget is rendered.
-                    // Hide the loader.
-                    document.getElementById('loader').style.display = 'none';
-                }
-            },
-            // Redirect to this URL upon successful sign in.
-            signInSuccessUrl: 'https://jerrymarkten.jeremyworld.org/', // Your desired success redirect URL
+        // Listen for authentication state changes
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in.
+                loadingMessage.style.display = 'none'; // Hide loader
+                appContent.style.display = 'block'; // Show content
 
-            // Configure which sign-in providers you want to use.
-            signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID, // Enable Google Sign-In
-                firebase.auth.EmailAuthProvider.PROVIDER_ID, // Enable Email/Password Sign-In
-                // Add other social providers you've enabled in Firebase here:
-                // firebase.auth.MicrosoftAuthProvider.PROVIDER_ID,
-                // firebase.auth.GithubAuthProvider.PROVIDER_ID,
-                // firebase.auth.AppleAuthProvider.PROVIDER_ID,
-                // etc.
-            ],
-            // Optional: Terms of service URL.
-            tosUrl: 'https://www.example.com/terms-of-service',
-            // Optional: Privacy policy URL.
-            privacyPolicyUrl: 'https://www.example.com/privacy-policy'
-        };
+                userEmailSpan.textContent = user.email;
+                userUidSpan.textContent = user.uid;
 
-        // Start the FirebaseUI Auth widget.
-        ui.start('#firebaseui-auth-container', uiConfig);
+                // Add logout functionality
+                logoutButton.addEventListener('click', async () => {
+                    try {
+                        await auth.signOut();
+                        // Redirect back to the login page after logout
+                        window.location.href = 'https://login.jeremyworld.org/';
+                    } catch (error) {
+                        console.error("Error signing out:", error);
+                        alert("Error signing out: " + error.message); // Using alert for simplicity, consider a custom modal
+                    }
+                });
+
+            } else {
+                // No user is signed in.
+                // Redirect to the login page.
+                window.location.href = 'https://login.jeremyworld.org/';
+            }
+        });
     </script>
 </body>
 </html>
