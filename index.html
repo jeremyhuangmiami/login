@@ -1,42 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>JeremyWorld Login</title>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <!-- FirebaseUI SDK and CSS -->
+  <!-- FirebaseUI SDK -->
   <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
-  <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css">
+  <link rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
 
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f0f2f5;
+      margin: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      margin: 0;
     }
 
     .login-container {
-      background: white;
+      background-color: #fff;
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       text-align: center;
-      width: 100%;
       max-width: 400px;
+      width: 100%;
     }
 
     h1 {
       color: #333;
-      margin-bottom: 20px;
     }
 
     #loader {
@@ -53,7 +52,7 @@
   </div>
 
   <script>
-    // Firebase config (replace with yours)
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
       authDomain: "jeremyworld-auth.firebaseapp.com",
@@ -66,19 +65,38 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    // Initialize FirebaseUI
-    const ui = new firebaseui.auth.AuthUI(firebase.auth());
-
-    // Extract returnTo from URL
+    // Get returnTo URL from query string
     const params = new URLSearchParams(window.location.search);
-    const returnTo = params.get('returnTo') || 'https://jeremyworld.org/';
+    const returnTo = params.get('returnTo') || "https://jeremyworld.org/";
 
-    // Configure FirebaseUI
+    // FirebaseUI config
     const uiConfig = {
       callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+        signInSuccessWithAuthResult: async function(authResult, redirectUrl) {
+          const user = authResult.user;
+
+          try {
+            const providers = await firebase.auth().fetchSignInMethodsForEmail(user.email);
+
+            // Try to link Email/Password if Google used before or vice versa
+            if (
+              authResult.credential &&
+              !providers.includes(authResult.credential.providerId)
+            ) {
+              try {
+                await user.linkWithCredential(authResult.credential);
+                console.log("Successfully linked accounts");
+              } catch (linkErr) {
+                console.warn("Linking failed:", linkErr.message);
+              }
+            }
+          } catch (fetchErr) {
+            console.error("Failed to fetch sign-in methods:", fetchErr.message);
+          }
+
+          // Redirect to original page
           window.location.href = returnTo;
-          return false; // prevent default redirect
+          return false;
         },
         uiShown: function() {
           document.getElementById('loader').style.display = 'none';
@@ -92,7 +110,8 @@
       privacyPolicyUrl: 'https://jeremyworld.org/privacy'
     };
 
-    // Start FirebaseUI
+    // Initialize FirebaseUI
+    const ui = new firebaseui.auth.AuthUI(firebase.auth());
     ui.start('#firebaseui-auth-container', uiConfig);
   </script>
 </body>
