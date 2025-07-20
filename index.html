@@ -3,11 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>JeremyWorld AI Chatbot</title>
+    <title>JeremyWorld Login</title>
 
-    <!-- Firebase SDKs (App and Auth) - IMPORTANT: Use the same versions as your login page -->
+    <!-- Firebase SDKs (App and Auth) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- FirebaseUI SDK and CSS -->
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/6.0.2/firebase-ui-auth.css" />
 
     <style>
         body {
@@ -16,146 +20,42 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #e9ebee;
+            background-color: #f0f2f5;
             margin: 0;
-            flex-direction: column;
-            color: #333;
-            padding: 20px;
-            box-sizing: border-box;
         }
-        .chatbot-container {
+        .login-container {
             background-color: #fff;
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
-            max-width: 700px; /* Wider for chatbot interface */
+            max-width: 400px;
             width: 100%;
-            display: none; /* Hidden by default until user is authenticated or error */
-            min-height: 500px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
         }
         h1 {
-            color: #2c3e50;
+            color: #333;
             margin-bottom: 20px;
-            font-size: 2.5em;
         }
-        #chat-window {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            min-height: 300px;
-            max-height: 400px;
-            overflow-y: auto;
-            text-align: left;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .message {
-            padding: 8px 12px;
-            border-radius: 6px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        .message.user {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-        }
-        .message.bot {
-            background-color: #e0e0e0;
-            align-self: flex-start;
-        }
-        #chat-input-container {
-            display: flex;
-            gap: 10px;
-        }
-        #user-input {
-            flex-grow: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-        #send-button {
-            padding: 12px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease;
-        }
-        #send-button:hover {
-            background-color: #2980b9;
-        }
-        #loading-message {
-            font-size: 1.2em;
-            color: #555;
-        }
-        #user-info {
+        /* Style for FirebaseUI container */
+        #firebaseui-auth-container {
             margin-top: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            border: 1px solid #eee;
         }
-        #logout-button {
-            margin-top: 20px; /* Adjusted margin */
-            padding: 10px 20px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        #logout-button:hover {
-            background-color: #c0392b;
-        }
-        .error-message {
-            color: #c0392b;
-            background-color: #ffe6e6;
-            border: 1px solid #e6a8a8;
+        #loader {
+            text-align: center;
             padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            max-width: 600px;
-            width: 90%;
-            display: none; /* Hidden by default */
         }
     </style>
 </head>
 <body>
-    <div id="loading-message">Loading user session...</div>
-    <div class="chatbot-container" id="app-content">
-        <h1>JeremyWorld AI Chatbot</h1>
-        <div id="chat-window">
-            <div class="message bot">Hello! I'm your AI Chatbot. How can I help you today?</div>
-        </div>
-        <div id="chat-input-container">
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
-        </div>
-        <div id="user-info">
-            <p>Logged in as: <span id="user-email"></span></p>
-        </div>
-        <button id="logout-button">Log Out</button>
-    </div>
-    <div class="error-message" id="environment-error">
-        <h3>Environment Not Supported</h3>
-        <p>Firebase Authentication requires a secure web environment (<code>http</code> or <code>https</code> protocol) and enabled web storage (like Local Storage) to function correctly.</p>
-        <p>It appears this page is currently running from a <code>blob:</code> URL, which restricts these features.</p>
-        <p>Please deploy this page to your live domain (e.g., <code>https://jerrymarkten.jeremyworld.org/</code>) and access it directly from there for full functionality.</p>
+    <div class="login-container">
+        <h1>Welcome to JeremyWorld</h1>
+        <p>Please sign in to continue.</p>
+        <div id="firebaseui-auth-container"></div>
+        <div id="loader">Loading...</div>
     </div>
 
     <script>
-        // Your Firebase configuration (MUST BE IDENTICAL TO YOUR LOGIN PAGE'S CONFIG)
+        // Your Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCyPk7d26WwhHM34MVbSHBMrnfSTtT213Y",
             authDomain: "jeremyworld-auth.firebaseapp.com",
@@ -165,158 +65,46 @@
             appId: "1:830728575641:web:3d22b3b15127f0ae93f608"
         };
 
-        const appContent = document.getElementById('app-content');
-        const loadingMessage = document.getElementById('loading-message');
-        const userEmailSpan = document.getElementById('user-email');
-        const logoutButton = document.getElementById('logout-button');
-        const environmentErrorDiv = document.getElementById('environment-error');
-        const chatWindow = document.getElementById('chat-window');
-        const userInput = document.getElementById('user-input');
-        const sendButton = document.getElementById('send-button');
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
 
-        // Function to add a message to the chat window
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', sender);
-            messageDiv.textContent = text;
-            chatWindow.appendChild(messageDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to bottom
-        }
+        // Initialize the FirebaseUI Widget.
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-        // Function to simulate AI response (replace with actual LLM call later)
-        async function getBotResponse(userMessage) {
-            addMessage("Thinking...", "bot"); // Show thinking indicator
-
-            // Simulate API call to an LLM
-            // This is where you would integrate with the Gemini API or another LLM
-            // For now, it's a simple placeholder
-            const prompt = `User says: "${userMessage}". Respond as a helpful AI chatbot.`;
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-
-            const payload = { contents: chatHistory };
-            const apiKey = ""; // Canvas will provide this at runtime for gemini-2.0-flash
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-
-                // Remove "Thinking..." message
-                chatWindow.removeChild(chatWindow.lastChild);
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const botResponse = result.candidates[0].content.parts[0].text;
-                    addMessage(botResponse, "bot");
-                } else {
-                    addMessage("Sorry, I couldn't get a response from the AI. Please try again.", "bot");
-                    console.error("LLM response structure unexpected:", result);
+        // Configure FirebaseUI.
+        const uiConfig = {
+            callbacks: {
+                signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+                    // User successfully signed in.
+                    // Return true to redirect to signInSuccessUrl.
+                    return true;
+                },
+                uiShown: function() {
+                    // The widget is rendered. Hide the loader.
+                    document.getElementById('loader').style.display = 'none';
                 }
-            } catch (error) {
-                // Remove "Thinking..." message
-                chatWindow.removeChild(chatWindow.lastChild);
-                addMessage("Error connecting to AI. Please check your network.", "bot");
-                console.error("Error calling LLM API:", error);
-            }
-        }
+            },
+            // Redirect to this URL upon successful sign in.
+            signInSuccessUrl: 'https://jerrymarkten.jeremyworld.org/', // Redirect to your AI Chatbot page
 
+            // Configure which sign-in providers you want to use.
+            signInOptions: [
+                firebase.auth.GoogleAuthProvider.PROVIDER_ID, // Enable Google Sign-In
+                firebase.auth.EmailAuthProvider.PROVIDER_ID, // Enable Email/Password Sign-In
+                // Add other social providers you've enabled in Firebase here:
+                // firebase.auth.MicrosoftAuthProvider.PROVIDER_ID,
+                // firebase.auth.GithubAuthProvider.PROVIDER_ID,
+                // firebase.auth.AppleAuthProvider.PROVIDER_ID,
+                // etc.
+            ],
+            // Optional: Terms of service URL.
+            tosUrl: 'https://www.example.com/terms-of-service', // Link to your terms-of-service.md
+            // Optional: Privacy policy URL.
+            privacyPolicyUrl: 'https://www.example.com/privacy-policy' // Link to your privacy-policy.md
+        };
 
-        // Event listener for sending messages
-        sendButton.addEventListener('click', () => {
-            const message = userInput.value.trim();
-            if (message) {
-                addMessage(message, "user");
-                userInput.value = ''; // Clear input
-                getBotResponse(message); // Get AI response
-            }
-        });
-
-        // Allow sending message with Enter key
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendButton.click();
-            }
-        });
-
-        // Check if the environment supports Firebase Auth operations
-        if (window.location.protocol === 'blob:') {
-            loadingMessage.style.display = 'none';
-            appContent.style.display = 'none';
-            environmentErrorDiv.style.display = 'block';
-            console.error("Firebase Auth cannot run on blob: protocol. Please deploy to http/https.");
-        } else {
-            try {
-                // Initialize Firebase
-                firebase.initializeApp(firebaseConfig);
-                const auth = firebase.auth();
-
-                // Function to handle authentication state and redirect
-                async function handleAuthState() {
-                    try {
-                        // Check for a redirect result first (important for OAuth flows)
-                        const result = await auth.getRedirectResult();
-                        if (result.user) {
-                            // User was just signed in via redirect
-                            displayUserContent(result.user);
-                            return; // Exit to prevent onAuthStateChanged from double-handling or race conditions
-                        }
-
-                        // If no redirect result, listen for general auth state changes
-                        auth.onAuthStateChanged(function(user) {
-                            if (user) {
-                                // User is signed in (either already, or after a non-redirect flow)
-                                displayUserContent(user);
-                            } else {
-                                // No user is signed in. Redirect to the login page.
-                                console.log("No user signed in, redirecting to login page.");
-                                window.location.href = 'https://login.jeremyworld.org/';
-                            }
-                        });
-
-                    } catch (error) {
-                        console.error("Error during authentication check:", error);
-                        // If there's an error during redirect result or auth state, redirect to login
-                        window.location.href = 'https://login.jeremyworld.org/';
-                    }
-                }
-
-                // Function to display user content
-                function displayUserContent(user) {
-                    loadingMessage.style.display = 'none'; // Hide loader
-                    appContent.style.display = 'flex'; // Show chatbot content (using flex for layout)
-
-                    userEmailSpan.textContent = user.email;
-
-                    // Add logout functionality
-                    logoutButton.addEventListener('click', async () => {
-                        try {
-                            await auth.signOut();
-                            // Redirect back to the login page after logout
-                            window.location.href = 'https://login.jeremyworld.org/';
-                        } catch (error) {
-                            console.error("Error signing out:", error);
-                            alert("Error signing out: " + error.message); // Using alert for simplicity, consider a custom modal
-                        }
-                    });
-                }
-
-                // Call the authentication state handler when the DOM is fully loaded
-                document.addEventListener('DOMContentLoaded', handleAuthState);
-
-            } catch (initError) {
-                console.error("Firebase initialization failed:", initError);
-                loadingMessage.style.display = 'none';
-                appContent.style.display = 'none';
-                environmentErrorDiv.style.display = 'block'; // Show the environment error message
-                environmentErrorDiv.querySelector('p:last-child').textContent = "Firebase initialization failed. Please ensure your Firebase config is correct and you are running on a secure web environment (http/https).";
-            }
-        }
+        // Start the FirebaseUI Auth widget.
+        ui.start('#firebaseui-auth-container', uiConfig);
     </script>
 </body>
 </html>
