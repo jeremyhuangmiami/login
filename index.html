@@ -519,7 +519,7 @@
                 document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800"; // 1 week
                 
                 // Redirect to dashboard or previous page
-                window.location.href = 'https://jeremyworld.org/dashboard';
+                window.location.href = 'https://jeremyworld.org/projects';
             } catch (error) {
                 alert(error.message);
                 const btn = isRegister ? googleRegisterBtn : googleSignInBtn;
@@ -584,7 +584,7 @@
                 if (!document.cookie.includes('jeremyworld-auth=true')) {
                     document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800";
                 }
-                window.location.href = 'https://jeremyworld.org/dashboard';
+                window.location.href = 'https://jeremyworld.org/projects';
             }
         });
     </script>
