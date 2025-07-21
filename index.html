@@ -67,10 +67,6 @@
             font-weight: 600;
             color: var(--text-light);
             margin-bottom: 0.5rem;
-            background: linear-gradient(90deg, var(--accent-blue), #00b4d8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
         }
 
         .logo p {
@@ -134,7 +130,7 @@
         .btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark));
+            background: var(--accent-blue);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -142,30 +138,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
         }
 
         .btn:hover {
+            background: var(--accent-blue-dark);
             transform: translateY(-2px);
             box-shadow: 0 8px 16px rgba(0, 140, 186, 0.3);
         }
@@ -207,28 +183,6 @@
 
         .divider::after {
             margin-left: 1rem;
-        }
-
-        .message {
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            border-radius: var(--border-radius);
-            text-align: center;
-            font-size: 0.9rem;
-            display: none;
-            backdrop-filter: blur(5px);
-        }
-
-        .error {
-            background: rgba(255, 0, 0, 0.1);
-            color: #ff6b6b;
-            border: 1px solid rgba(255, 0, 0, 0.2);
-        }
-
-        .success {
-            background: rgba(0, 255, 0, 0.1);
-            color: #51cf66;
-            border: 1px solid rgba(0, 255, 0, 0.2);
         }
 
         .footer {
@@ -290,10 +244,6 @@
             margin-bottom: 1rem;
             color: var(--text-light);
             font-size: 1.5rem;
-            background: linear-gradient(90deg, var(--accent-blue), #00b4d8);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
         }
 
         .modal p {
@@ -315,60 +265,111 @@
             border-color: var(--accent-blue);
         }
 
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
+        /* Signup form styles (hidden by default) */
+        #signup-form {
+            display: none;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .name-fields {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .name-fields .form-group {
+            flex: 1;
+            margin-bottom: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="logo">
-            <h1>Welcome Back</h1>
-            <p>Sign in to access your JeremyWorld account</p>
+        <!-- Login Form -->
+        <div id="login-form">
+            <div class="logo">
+                <h1>Welcome Back</h1>
+                <p>Sign in to access your JeremyWorld account</p>
+            </div>
+
+            <form id="auth-form" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                    <div class="forgot-password">
+                        <a href="#" id="forgot-password-link">Forgot password?</a>
+                    </div>
+                </div>
+                <button type="submit" id="sign-in-btn" class="btn">Sign In</button>
+            </form>
+
+            <div class="divider">or continue with</div>
+
+            <button id="google-sign-in-btn" class="btn btn-google">
+                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign in with Google
+            </button>
+
+            <div class="footer">
+                Don't have an account? <a href="#" id="show-signup">Sign up</a>
+            </div>
         </div>
 
-        <div id="message" class="message"></div>
-
-        <form id="auth-form" class="auth-form">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" required placeholder="your@email.com">
+        <!-- Signup Form -->
+        <div id="signup-form">
+            <div class="logo">
+                <h1>Create Account</h1>
+                <p>Join JeremyWorld today</p>
             </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" required placeholder="••••••••">
-                <div class="forgot-password">
-                    <a href="#" id="forgot-password-link">Forgot password?</a>
+
+            <form id="register-form" class="auth-form">
+                <div class="name-fields">
+                    <div class="form-group">
+                        <label for="first-name">First Name</label>
+                        <input type="text" id="first-name" required placeholder="John">
+                    </div>
+                    <div class="form-group">
+                        <label for="last-name">Last Name</label>
+                        <input type="text" id="last-name" required placeholder="Doe">
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label for="register-email">Email Address</label>
+                    <input type="email" id="register-email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required placeholder="••••••••" minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" required placeholder="••••••••" minlength="6">
+                </div>
+                <button type="submit" id="register-btn" class="btn">Create Account</button>
+            </form>
+
+            <div class="divider">or continue with</div>
+
+            <button id="google-register-btn" class="btn btn-google">
+                <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Sign up with Google
+            </button>
+
+            <div class="footer">
+                Already have an account? <a href="#" id="show-login">Sign in</a>
             </div>
-            <button type="submit" id="sign-in-btn" class="btn">Sign In</button>
-        </form>
-
-        <div class="divider">or continue with</div>
-
-        <button id="google-sign-in-btn" class="btn btn-google">
-            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Google
-        </button>
-
-        <div class="footer">
-            Don't have an account? <a href="https://login.jeremyworld.org/signup">Sign up</a>
         </div>
     </div>
 
@@ -407,21 +408,32 @@
 
         // DOM Elements
         const authForm = document.getElementById('auth-form');
+        const registerForm = document.getElementById('register-form');
         const signInBtn = document.getElementById('sign-in-btn');
+        const registerBtn = document.getElementById('register-btn');
         const googleSignInBtn = document.getElementById('google-sign-in-btn');
-        const messageEl = document.getElementById('message');
+        const googleRegisterBtn = document.getElementById('google-register-btn');
         const forgotPasswordLink = document.getElementById('forgot-password-link');
         const forgotPasswordModal = document.getElementById('forgot-password-modal');
         const resetPasswordForm = document.getElementById('reset-password-form');
         const cancelResetBtn = document.getElementById('cancel-reset');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const showSignupLink = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
 
-        // Show message helper
-        function showMessage(msg, type) {
-            messageEl.textContent = msg;
-            messageEl.className = `message ${type}`;
-            messageEl.style.display = 'block';
-            setTimeout(() => messageEl.style.display = 'none', 5000);
-        }
+        // Toggle between login and signup forms
+        showSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.style.display = 'none';
+            signupForm.style.display = 'block';
+        });
+
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupForm.style.display = 'none';
+            loginForm.style.display = 'block';
+        });
 
         // Email/password login
         authForm.addEventListener('submit', async (e) => {
@@ -431,7 +443,7 @@
 
             try {
                 signInBtn.disabled = true;
-                signInBtn.innerHTML = '<span class="spinner"></span> Signing in...';
+                signInBtn.textContent = 'Signing in...';
 
                 // Set session persistence
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
@@ -445,17 +457,59 @@
                 // Redirect to dashboard or previous page
                 window.location.href = 'https://jeremyworld.org/dashboard';
             } catch (error) {
-                showMessage(error.message, 'error');
+                alert(error.message);
                 signInBtn.disabled = false;
                 signInBtn.textContent = 'Sign In';
             }
         });
 
-        // Google Sign-In
-        googleSignInBtn.addEventListener('click', async () => {
+        // Registration
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords don't match");
+                return;
+            }
+
             try {
-                googleSignInBtn.disabled = true;
-                googleSignInBtn.innerHTML = '<span class="spinner"></span> Continuing with Google...';
+                registerBtn.disabled = true;
+                registerBtn.textContent = 'Creating account...';
+
+                // Set session persistence
+                await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+                
+                // Create user
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile with name
+                await userCredential.user.updateProfile({
+                    displayName: `${firstName} ${lastName}`
+                });
+                
+                // Set cross-domain cookie
+                document.cookie = "jeremyworld-auth=true; path=/; domain=.jeremyworld.org; max-age=604800"; // 1 week
+                
+                // Redirect to dashboard or previous page
+                window.location.href = 'https://jeremyworld.org/dashboard';
+            } catch (error) {
+                alert(error.message);
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        });
+
+        // Google Sign-In
+        async function handleGoogleAuth(isRegister = false) {
+            try {
+                const btn = isRegister ? googleRegisterBtn : googleSignInBtn;
+                btn.disabled = true;
+                btn.innerHTML = isRegister ? 'Signing up with Google...' : 'Signing in with Google...';
 
                 const provider = new firebase.auth.GoogleAuthProvider();
                 await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
@@ -467,19 +521,23 @@
                 // Redirect to dashboard or previous page
                 window.location.href = 'https://jeremyworld.org/dashboard';
             } catch (error) {
-                showMessage(error.message, 'error');
-                googleSignInBtn.disabled = false;
-                googleSignInBtn.innerHTML = `
+                alert(error.message);
+                const btn = isRegister ? googleRegisterBtn : googleSignInBtn;
+                btn.disabled = false;
+                btn.innerHTML = `
                     <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                     </svg>
-                    Google
+                    ${isRegister ? 'Sign up with Google' : 'Sign in with Google'}
                 `;
             }
-        });
+        }
+
+        googleSignInBtn.addEventListener('click', () => handleGoogleAuth(false));
+        googleRegisterBtn.addEventListener('click', () => handleGoogleAuth(true));
 
         // Forgot Password Functionality
         forgotPasswordLink.addEventListener('click', (e) => {
@@ -499,14 +557,14 @@
             
             try {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner"></span> Sending...';
+                submitBtn.textContent = 'Sending...';
                 
                 await auth.sendPasswordResetEmail(email);
                 
-                showMessage('Password reset email sent. Please check your inbox.', 'success');
+                alert('Password reset email sent. Please check your inbox.');
                 forgotPasswordModal.style.display = 'none';
             } catch (error) {
-                showMessage(error.message, 'error');
+                alert(error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Send Reset Link';
